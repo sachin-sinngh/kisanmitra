@@ -1,1 +1,1 @@
-Visit https://sachin-sinngh.github.io/kisanmitra/
+Visit https://sachin-sinngh.github.io/kisanmitra
