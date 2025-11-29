@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <script defer>
+      var supplement = {};
+      var diseases = [];
+      Promise.all([
+        fetch("./sup.json").then((res) => res.json()),
+        fetch("./disease.json").then((res) => res.json()),
+      ]).then(([info, disease]) => {
+        info.map((sup, i) => {
+          const dis = disease[i];
+          supplement[sup.disease_name] = {
+            name: dis.disease_name,
+            desc: dis.description,
+            fix: dis["Possible Steps"],
+            sup: sup["supplement name"],
+            img: dis.image_url,
+          };
+        });
+      });
+
+      async function checkImage() {
+        const blob = document.getElementById("file").files[0];
+        // Create an object URL from the Blob
+        const blobUrl = URL.createObjectURL(blob);
+        const imageElem = document.getElementById("img");
+        imageElem.width = 256;
+        imageElem.height = 256;
+        imageElem.src = blobUrl;
+        imageElem.onload = () =>
+          document.querySelector(".placeholder")?.remove();
+        const formData = new FormData();
+        formData.append("file", blob);
+
+        const response = await fetch("http://127.0.0.1:5000/predict", {
+          method: "POST",
+          body: formData,
+        });
+        const text = await response.text();
+        console.log(text);
+
+        const item = supplement[text];
+        console.log(supplement, text);
+        if (item) {
+          document.getElementById("name").innerHTML = item.name;
+          document.getElementById("desc").innerHTML = item.desc;
+          document.getElementById("fix").innerHTML = item.fix;
+          document.getElementById("sup").innerHTML = item.sup;
+          document.getElementById("summary").hidden = false;
+        }
+      }
+    </script>
+    <style>
+      body {
+        background-color: #ecfaea;
+        padding: 4rem;
+        margin: 0;
+      }
+
+      @media screen and (width <= 800px) {
+        body {
+          padding: 1rem;
+        }
+      }
+
+      .custum-file-upload {
+        height: 256px;
+        width: 256px;
+        display: flex;
+        flex-direction: column;
+        align-items: space-between;
+        gap: 20px;
+        cursor: pointer;
+        align-items: center;
+        justify-content: center;
+        border: 2px dashed black;
+        padding: 1.5rem;
+        border-radius: 10px;
+        box-shadow: 0px 48px 35px -48px black;
+      }
+
+      .custum-file-upload .icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .custum-file-upload .icon svg {
+        height: 80px;
+        fill: black;
+      }
+
+      .custum-file-upload .text {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .custum-file-upload .text span {
+        font-weight: 400;
+        color: black;
+      }
+
+      .custum-file-upload input {
+        display: none;
+      }
+
+      .card-title {
+        color: #262626;
+        font-size: 1.5em;
+        line-height: normal;
+        font-weight: 700;
+        margin-bottom: 0.5em;
+      }
+
+      .small-desc {
+        font-size: 1em;
+        font-weight: 400;
+        line-height: 1.5em;
+        color: #452c2c;
+      }
+
+      .small-desc {
+        font-size: 1em;
+      }
+
+      .card {
+        display: block;
+        position: relative;
+        background-color: #f2f8f9;
+        border-radius: 10px;
+        padding: 2em 1.2em;
+        margin-bottom: 1rem;
+        text-decoration: none;
+        z-index: 0;
+        overflow: hidden;
+        background: linear-gradient(to bottom, #c3e6ec, #a7d1d9);
+        font-family: Arial, Helvetica, sans-serif;
+        min-width: 20rem;
+        box-shadow: 0px 4px 2px -4px black;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div style="display: flex; flex-direction: column; align-items: center">
+      <h1 style="font-weight: 400; color: rgb(4, 54, 4)">
+        <b>Kisan Mitra</b>
+      </h1>
+      <p class="lead" style="font-weight: 500; color: black">
+        We will help you to detect disease in your crop. Simply upload image of
+        crop, like leaf or fruit and see the results.
+      </p>
+
+      <div>
+        <div></div>
+        <label for="file" class="custum-file-upload">
+          <div class="placeholder">
+            <div class="icon">
+              <svg
+                viewBox="0 0 24 24"
+                fill=""
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                <g
+                  id="SVGRepo_tracerCarrier"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                ></g>
+                <g id="SVGRepo_iconCarrier">
+                  <path
+                    fill-rule="evenodd"
+                    clip-rule="evenodd"
+                    d="M10 1C9.73478 1 9.48043 1.10536 9.29289 1.29289L3.29289 7.29289C3.10536 7.48043 3 7.73478 3 8V20C3 21.6569 4.34315 23 6 23H7C7.55228 23 8 22.5523 8 22C8 21.4477 7.55228 21 7 21H6C5.44772 21 5 20.5523 5 20V9H10C10.5523 9 11 8.55228 11 8V3H18C18.5523 3 19 3.44772 19 4V9C19 9.55228 19.4477 10 20 10C20.5523 10 21 9.55228 21 9V4C21 2.34315 19.6569 1 18 1H10ZM9 7H6.41421L9 4.41421V7ZM14 15.5C14 14.1193 15.1193 13 16.5 13C17.8807 13 19 14.1193 19 15.5V16V17H20C21.1046 17 22 17.8954 22 19C22 20.1046 21.1046 21 20 21H13C11.8954 21 11 20.1046 11 19C11 17.8954 11.8954 17 13 17H14V16V15.5ZM16.5 11C14.142 11 12.2076 12.8136 12.0156 15.122C10.2825 15.5606 9 17.1305 9 19C9 21.2091 10.7909 23 13 23H20C22.2091 23 24 21.2091 24 19C24 17.1305 22.7175 15.5606 20.9844 15.122C20.7924 12.8136 18.858 11 16.5 11Z"
+                    fill=""
+                  ></path>
+                </g>
+              </svg>
+            </div>
+            <div class="text">
+              <span>Click to upload image</span>
+            </div>
+          </div>
+          <input id="file" type="file" onchange="checkImage()" />
+
+          <img id="img" />
+        </label>
+      </div>
+    </div>
+
+    <div id="summary" hidden>
+      <h1 id="name" style="text-align: center; margin: 2rem"></h1>
+
+      <div class="card">
+        <p class="card-title">Brief description:</p>
+        <p id="desc"></p>
+      </div>
+      <div class="card">
+        <p class="card-title">Prevention:</p>
+        <p id="fix"></p>
+      </div>
+      <div class="card">
+        <p class="card-title">Pesticide:</p>
+        <p id="sup"></p>
+      </div>
+    </div>
+
+    <h4><b>Why is it necessary to detect disease in plant ?</b></h4>
+    <p>
+      Plant diseases affect the growth of their respective species. In addition,
+      some research gaps are identified from which to obtain greater
+      transparency for detecting diseases in plants, even before their symptoms
+      appear clearly. diagnosis is one of the most important aspects of a plant
+      pathologist's training. Without proper identification of the disease and
+      the disease-causing agent, disease control measures can be a waste of time
+      and money and can lead to further plant losses. Proper disease diagnosis
+      is necessary.
+    </p>
+
+    <h4><b>Prevent Plant Disease follow below steps:</b></h4>
+    <ol>
+      <li>Follow Good Sanitation Practices.</li>
+      <li>Fertilize to Keep Your Plants Healthy.</li>
+      <li>Inspect Plants for Diseases Before You Bring Them Home.</li>
+      <li>Allow the Soil to Warm Before Planting.</li>
+      <li>Ensure a Healthy Vegetable Garden By Rotating Crops.</li>
+      <li>Provide Good Air Circulation</li>
+      <li>Remove Diseased Stems and Foliage</li>
+    </ol>
+  </body>
+</html>
