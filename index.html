@@ -37,21 +37,28 @@
         const formData = new FormData();
         formData.append("file", blob);
 
-        const response = await fetch("http://127.0.0.1:5000/predict", {
-          method: "POST",
-          body: formData,
-        });
-        const text = await response.text();
-        console.log(text);
-
-        const item = supplement[text];
-        console.log(supplement, text);
-        if (item) {
-          document.getElementById("name").innerHTML = item.name;
-          document.getElementById("desc").innerHTML = item.desc;
-          document.getElementById("fix").innerHTML = item.fix;
-          document.getElementById("sup").innerHTML = item.sup;
-          document.getElementById("summary").hidden = false;
+        const status = document.getElementById("status");
+        status.hidden = false;
+        try {
+          const response = await fetch("https://cr-ce34cd7b04e9448c8f15ce56fa200153.ecs.ap-south-1.on.aws/predict", {
+            method: "POST",
+            body: formData,
+          });
+          const text = await response.text();
+          console.log(text);
+          const item = supplement[text];
+          if (item) {
+            status.hidden = true;
+            document.getElementById("name").innerHTML = item.name;
+            document.getElementById("desc").innerHTML = item.desc;
+            document.getElementById("fix").innerHTML = item.fix;
+            document.getElementById("sup").innerHTML = item.sup;
+            document.getElementById("summary").hidden = false;
+          } else {
+            status.innerHTML = text;
+          }
+        } catch (e) {
+          status.innerHTML = e;
         }
       }
     </script>
@@ -144,6 +151,33 @@
         min-width: 20rem;
         box-shadow: 0px 4px 2px -4px black;
       }
+
+      /* HTML: <div class="loader"></div> */
+      /* HTML: <div class="loader"></div> */
+      /* HTML: <div class="loader"></div> */
+      .loader {
+        margin-left: 0.5rem;
+        width: 40px;
+        aspect-ratio: 2;
+        --_g: no-repeat radial-gradient(circle closest-side, #000 90%, #0000);
+        background: var(--_g) 0% 50%, var(--_g) 50% 50%, var(--_g) 100% 50%;
+        background-size: calc(100% / 3) 50%;
+        animation: l3 1s infinite linear;
+      }
+      @keyframes l3 {
+        20% {
+          background-position: 0% 0%, 50% 50%, 100% 50%;
+        }
+        40% {
+          background-position: 0% 100%, 50% 0%, 100% 50%;
+        }
+        60% {
+          background-position: 0% 50%, 50% 100%, 100% 0%;
+        }
+        80% {
+          background-position: 0% 50%, 50% 50%, 100% 100%;
+        }
+      }
     </style>
   </head>
 
@@ -194,6 +228,12 @@
       </div>
     </div>
 
+    <div id="status" hidden style="margin-top:2rem; text-align: center; font-size: 1.5rem;">
+      <div style="display: flex; align-items: center;">
+        Loading data
+        <div class="loader"></div>
+      </div>
+    </div>
     <div id="summary" hidden>
       <h1 id="name" style="text-align: center; margin: 2rem"></h1>
 
