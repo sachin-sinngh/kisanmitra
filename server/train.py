@@ -20,10 +20,10 @@ from sklearn.model_selection import train_test_split
 DEFAULT_IMAGE_SIZE = tuple((256, 256))
 
 # Number of images used to train the model
-N_IMAGES = 10
+N_IMAGES = 100
 
 # Path to the dataset folder
-images_dir = './dataset/images'
+dataset_dir = './dataset/images'
 
 def toArray(image_dir):
     try:
@@ -41,17 +41,16 @@ image_list, label_list = [], []
 
 try:
     print("[INFO] Loading images ...")
-    images_dir_list = listdir(images_dir)
 
-    for images_dir in images_dir_list:
-        print(f"[INFO] Processing {images_dir} ...")
-        image_list = listdir(f"{images_dir}/{images_dir}/")
+    for subFolder in listdir(dataset_dir):
+        print(f"[INFO] Processing {subFolder} ...")
+        disease_images = listdir(f"{dataset_dir}/{subFolder}/")
 
-        for image in image_list[:N_IMAGES]:
-            image_directory = f"{images_dir}/{images_dir}/{image}"
+        for image in disease_images[:N_IMAGES]:
+            image_directory = f"{dataset_dir}/{subFolder}/{image}"
             if image_directory.endswith(".jpg")==True or image_directory.endswith(".JPG")==True:
                 image_list.append(toArray(image_directory))
-                label_list.append(images_dir)
+                label_list.append(subFolder)
 
     print("[INFO] Image loading completed")  
 except Exception as e:
@@ -59,7 +58,6 @@ except Exception as e:
 
 # Transform the loaded training image data into numpy array
 np_image_list = np.array(image_list, dtype=np.float16) / 225.0
-print()
 
 # Check the number of images loaded for training
 image_len = len(image_list)
@@ -70,7 +68,7 @@ print(f"Total number of images: {image_len}")
 label_binarizer = LabelBinarizer()
 image_labels = label_binarizer.fit_transform(label_list)
 
-pickle.dump(label_binarizer,open('model.pkl', 'wb'))
+pickle.dump(label_binarizer,open('label.pkl', 'wb'))
 n_classes = len(label_binarizer.classes_)
 
 print("Total number of classes: ", n_classes)
@@ -191,10 +189,5 @@ scores = model.evaluate(x_test, y_test)
 print(f"Test Accuracy: {scores[1]*100}")
 
 """# Save Model"""
-
-# Dump pickle file of the model
 print("[INFO] Saving model...")
 pickle.dump(model,open('model.pkl', 'wb'))
-
-print("[INFO] Saving label transform...")
-pickle.load(open('label.pkl', 'rb'))
