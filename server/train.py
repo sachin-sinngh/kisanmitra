@@ -41,17 +41,17 @@ image_list, label_list = [], []
 
 try:
     print("[INFO] Loading images ...")
-    plant_disease_folder_list = listdir(images_dir)
+    images_dir_list = listdir(images_dir)
 
-    for plant_disease_folder in plant_disease_folder_list:
-        print(f"[INFO] Processing {plant_disease_folder} ...")
-        plant_disease_image_list = listdir(f"{images_dir}/{plant_disease_folder}/")
+    for images_dir in images_dir_list:
+        print(f"[INFO] Processing {images_dir} ...")
+        image_list = listdir(f"{images_dir}/{images_dir}/")
 
-        for image in plant_disease_image_list[:N_IMAGES]:
-            image_directory = f"{images_dir}/{plant_disease_folder}/{image}"
+        for image in image_list[:N_IMAGES]:
+            image_directory = f"{images_dir}/{images_dir}/{image}"
             if image_directory.endswith(".jpg")==True or image_directory.endswith(".JPG")==True:
                 image_list.append(toArray(image_directory))
-                label_list.append(plant_disease_folder)
+                label_list.append(images_dir)
 
     print("[INFO] Image loading completed")  
 except Exception as e:
@@ -85,10 +85,7 @@ augment = ImageDataGenerator(rotation_range=25, width_shift_range=0.1,
 print("[INFO] Splitting data to train and test...")
 x_train, x_test, y_train, y_test = train_test_split(np_image_list, image_labels, test_size=0.2, random_state = 42)
 
-"""# Build Model
-
-Defining the hyperparameters of the plant disease classification model.
-"""
+""" Defining the hyperparameters of the plant disease classification model."""
 
 EPOCHS = 25
 STEPS = 100
@@ -175,7 +172,7 @@ epochs = range(1, len(acc) + 1)
 # Train and validation accuracy
 plt.plot(epochs, acc, 'b', label='Training accurarcy')
 plt.plot(epochs, val_acc, 'r', label='Validation accurarcy')
-plt.title('Training and Validation accurarcy')
+plt.title('Training and Validation accuracy')
 plt.legend()
 
 plt.figure()
