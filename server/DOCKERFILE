@@ -1,0 +1,20 @@
+# Use a base Python image
+FROM python:3.11-slim
+
+# Set the working directory inside the container
+WORKDIR /app
+
+# Install Python dependencies
+RUN apt-get update && apt-get install ffmpeg libsm6 libxext6  -y
+RUN pip install opencv-python flask matplotlib flask-cors keras tensorflow scikit-learn
+RUN pip install waitress
+
+RUN mkdir uploads
+COPY model.pkl .
+COPY label.pkl .
+COPY app.py .
+
+EXPOSE 5000
+
+# Define the command to run your application
+CMD ["python", "app.py"]
