@@ -2,10 +2,10 @@
 <html lang="en">
   <head>
     <!-- Required meta tags -->
+    <link rel="manifest" href="manifest.json" />
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="icon" href="logo.jpg">
-    <link rel="manifest" href="manifest.json" />
+    <link rel="icon" href="logo.jpg" />
 
     <script defer>
       var supplement = {};
@@ -42,10 +42,13 @@
         const status = document.getElementById("status");
         status.hidden = false;
         try {
-          const response = await fetch("https://cr-ce34cd7b04e9448c8f15ce56fa200153.ecs.ap-south-1.on.aws/predict", {
-            method: "POST",
-            body: formData,
-          });
+          const response = await fetch(
+            "https://cr-ce34cd7b04e9448c8f15ce56fa200153.ecs.ap-south-1.on.aws/predict",
+            {
+              method: "POST",
+              body: formData,
+            }
+          );
           const text = await response.text();
           console.log(text);
           const item = supplement[text];
@@ -63,7 +66,38 @@
           status.innerHTML = e;
         }
       }
+
+      // check if already running pwa
+      const isInstalledPWA = window.matchMedia(
+        "(display-mode: standalone)"
+      ).matches;
+
+      if (!isInstalledPWA) {
+        // show install button
+        let installPrompt = null;
+        const installButton = document.querySelector("#install");
+
+        window.addEventListener("beforeinstallprompt", (event) => {
+          event.preventDefault();
+          installPrompt = event;
+          installButton.removeAttribute("hidden");
+        });
+
+        // trigger installation
+        installButton.addEventListener("click", async () => {
+          if (!installPrompt) {
+            return;
+          }
+          const result = await installPrompt.prompt();
+          console.log(`Install prompt was: ${result.outcome}`);
+          installPrompt = null;
+          installButton.setAttribute("hidden", "");
+        });
+      }
     </script>
+  </head>
+
+  <body>
     <style>
       body {
         background-color: #ecfaea;
@@ -181,12 +215,10 @@
         }
       }
     </style>
-  </head>
-
-  <body>
     <div style="display: flex; flex-direction: column; align-items: center">
       <h1 style="font-weight: 400; color: rgb(4, 54, 4)">
         <b>Kisan Mitra</b>
+        <button id="install" hidden>Install App</button>
       </h1>
       <p class="lead" style="font-weight: 500; color: black">
         We will help you to detect disease in your crop. Simply upload image of
@@ -230,8 +262,12 @@
       </div>
     </div>
 
-    <div id="status" hidden style="margin-top:2rem; text-align: center; font-size: 1.5rem;">
-      <div style="display: flex; align-items: center;">
+    <div
+      id="status"
+      hidden
+      style="margin-top: 2rem; text-align: center; font-size: 1.5rem"
+    >
+      <div style="display: flex; align-items: center">
         Loading data
         <div class="loader"></div>
       </div>
