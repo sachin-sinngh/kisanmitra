@@ -1,5 +1,6 @@
 {
   "name": "Kisan Mitra",
+  "short_name": "Kisan Mitra",
   "icons": [
     {
       "src": "logo.jpg",
@@ -12,7 +13,10 @@
       "sizes": "192x192"
     }
   ],
-  "display": "standalone",
   "start_url": ".",
-  "prefer_related_applications": false
+  "prefer_related_applications": false,
+  "id": "kisan_mitra",
+  "display": "standalone",
+  "display_override": ["window-controls-overlay"],
+  "description": "Kisan mitra app"
 }
