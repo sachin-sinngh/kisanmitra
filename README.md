@@ -1,9 +1,11 @@
 - Visit https://sachin-sinngh.github.io/kisanmitra
 - UI development
+  - Code in directory `docs`
   - `index.html` contains the website code, it connects to server via a fixed url for now
   - `disease.json` contains the description about the diseases
   - `sup.json` contains the information about supplements
 - Backend development
+  - Code in directory `server`
   - Install python3
   - Install requirements run command: `pip install opencv-python flask matplotlib flask-cors keras tensorflow scikit-learn` 
   - Train model

@@ -216,11 +216,22 @@
           background-position: 0% 50%, 50% 50%, 100% 100%;
         }
       }
+
+      #install {
+        padding: 0.8rem 2rem;
+        background: #0f62fe;
+        color: white;
+        box-shadow: 0px 4px 2px -4px black;
+        border: none;
+        border-radius: 4px;
+      }
     </style>
     <div style="display: flex; flex-direction: column; align-items: center">
       <h1 style="font-weight: 400; color: rgb(4, 54, 4)">
-        <b>Kisan Mitra</b>
-        <button id="install" hidden>Install App</button>
+        <div style="display: flex; gap: 2rem; align-items: center; flex-direction: column;">
+          <b>Kisan Mitra</b>
+          <button id="install" hidden>Install App</button>
+        </div>
       </h1>
       <p class="lead" style="font-weight: 500; color: black">
         We will help you to detect disease in your crop. Simply upload image of
