@@ -1,0 +1,19 @@
+- Visit https://sachin-sinngh.github.io/kisanmitra
+- UI development
+  - `index.html` contains the website code, it connects to server via a fixed url for now
+  - `disease.json` contains the description about the diseases
+  - `sup.json` contains the information about supplements
+- Backend development
+  - Install python3
+  - Install requirements run command: `pip install opencv-python flask matplotlib flask-cors keras tensorflow scikit-learn` 
+  - Train model
+    - Run command: `python3 train.py`
+    - Adjust number of images to use by chaning variable `N_IMAGES`
+    - Folder `dataset` contains all the images used to train and test model
+  - Run server
+    - Run command: `python3 app.py`
+  - Build and deploy
+    - Docker container is built and deployed on AWS ECS
+      - Use command to build container: `docker build -f DOCKERFILE -t crop:latest --platform linux/amd64 .` 
+  - Pretrained model can be downloaded from here - https://crop-check.s3.ap-south-1.amazonaws.com/model.pkl
+  
