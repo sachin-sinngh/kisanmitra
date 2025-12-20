@@ -1,0 +1,12 @@
+{
+  "name": "Kisan Mitra",
+  "icons": [
+    {
+      "src": "logo.jpg",
+      "type": "image/jpg",
+      "sizes": "512x512"
+    }
+  ],
+  "display": "standalone",
+  "start_url": "."
+}
