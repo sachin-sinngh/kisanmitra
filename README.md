@@ -17,5 +17,4 @@
   - Build and deploy
     - Docker container is built and deployed on AWS ECS
       - Use command to build container: `docker build -f DOCKERFILE -t crop:latest --platform linux/amd64 .` 
-  - Pretrained model can be downloaded from here - https://crop-check.s3.ap-south-1.amazonaws.com/model.pkl
-  
+  - Pretrained model can be found in `server/model.pkl`
